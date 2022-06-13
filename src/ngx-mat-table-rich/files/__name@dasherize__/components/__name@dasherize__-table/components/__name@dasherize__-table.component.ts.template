@@ -1,0 +1,326 @@
+import { BreakpointObserver } from "@angular/cdk/layout";
+import { CdkPortal, ComponentPortal } from "@angular/cdk/portal";
+import {
+  Component,
+  Injector,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from "@angular/core";
+import { MatTableDataSource } from "@angular/material/table";
+import { AtlpSidebarService } from "projects/@atlp/components/sidebar/sidebar.service";
+import { IconsService } from "projects/@atlp/services/icons.service";
+import { AtlpTranslationService } from "projects/@atlp/services/app-translation.service";
+import { locale as navigationEnglish } from "../../../i18n/en";
+import { locale as navigationArabic } from "../../../i18n/ae";
+import { TranslateService } from "@ngx-translate/core";
+import {
+  atlpRichClassicTableAddColumnsListenerTableModeDrag,
+  atlpRichClassicTableCreateTableModeSelectionDrag,
+} from "projects/atlp-table/src/lib/models/atlp-rich-classic-table-builder";
+
+import { AtlpRichClassicTableModeSelectionDrag } from "projects/atlp-table/src/lib/models/atlp-table-constructor/atlp-rich-classic-table-mode-selection-drag";
+import { AtlpRichClassicTableMode } from "projects/atlp-table/src/lib/models/atlp-rich-classic-table-enum";
+import { AtlpRichClassicTransTablePortalBridgeService } from "projects/atlp-table/src/lib/services/atlp-rich-classic-bridge.service";
+import { Subject, Subscription } from "rxjs";
+import { atlpRichClassicTableBreakpointsListenerDefault } from "projects/atlp-table/src/lib/models/atlp-rich-classic-table-breakpoint.model";
+import { AtlpMileStoneBridgePortalService } from "projects/atlp-table/src/lib/component/atlp-rich-table-milestone/services/atlp-rich-table-milestone-bridge.service";
+import { IacSidebarName } from "projects/atlp-iac-ui/projects/@iac-shared/models/enums/sidebar-name.enum";
+import { IacFilterKey } from "projects/atlp-iac-ui/projects/@iac-shared/models/enums/filter-name.enum";
+import { I<%=classify(name)%>ListViewModel } from "../../../interfaces";
+import { <%=classify(name)%>InfoComponent } from "../../<%=name%>-table-section/components/<%=name%>-info/<%=name%>-info.component";
+import { <%=classify(name)%>CardComponent } from "../../<%=name%>-table-section/components/<%=name%>-card/<%=name%>-card.component";
+import { <%=classify(name)%>ColumnsDef } from "../../../models/<%=name%>-columns-def";
+import {
+  atlpDefaultPaginatorData, IAtlpInputPaginator, IAtlpPageResponseModel,
+} from "projects/@atlp/components/atlp-pagination/models/altp-paginator.model";
+import { <%=classify(name)%>FilterComponent } from "../../../filter/components/<%=name%>-filter-content.component";
+import { <%=classify(name)%>RichTableMileStoneService } from "../services/<%=name%>-rich-table-milestone.service";
+import { <%=classify(name)%>TableDataService } from "../services/<%=name%>-table-data.service";
+import { IacUserAccountInfoService } from "projects/atlp-iac-ui/projects/@iac-shared/services/user-account.service";
+import { IacUserAccountInfo } from "projects/atlp-iac-ui/projects/@iac-shared/models/IUserAccountInfo";
+import { AtlpTableConfig } from "projects/atlp-table/src/lib/component/atlp-rich-table-milestone/models/atlp-table-config";
+import { AtlpRichClassicTableEmitElInfoTable, AtlpRichClassicTableEmitElTable } from "projects/atlp-table/src/lib/models/atlp-rich-classic-table-interfaces";
+import { <%=classify(name)%>ApiConfig } from "../../../configs/<%=name%>-api.config";
+import { IacCheckHelper } from "projects/atlp-iac-ui/projects/@iac-shared/helper/check";
+import { ATLP_PORTAL_TABLE_DATA } from "projects/atlp-table/src/lib/injectors/atlp-table-portal.injector";
+import { debounceTimeDecorator } from "projects/atlp-iac-ui/projects/@iac-shared/decorators/function-decorator";
+
+@Component({
+  selector: "<%=name%>-table",
+  templateUrl: "./<%=name%>-table.component.html",
+  styleUrls: ["./<%=name%>-table.component.scss"],
+})
+export class <%=classify(name)%>TableComponent
+  implements OnInit, OnDestroy
+{
+  subscriptions: Subscription[] = [];
+  <%=classify(name)%>CardComponent: ComponentPortal<<%=classify(name)%>CardComponent>[] = [];
+  <%=classify(name)%>InfoComponent: ComponentPortal<<%=classify(name)%>InfoComponent>[] = [];
+  table: AtlpRichClassicTableModeSelectionDrag<I<%=classify(name)%>ListViewModel> =
+    atlpRichClassicTableCreateTableModeSelectionDrag<I<%=classify(name)%>ListViewModel>(
+      new MatTableDataSource([]),
+      <%=classify(name)%>ColumnsDef,
+      AtlpRichClassicTableMode.rich
+    );
+  typeViewBasic: boolean;
+  showFilters: boolean;
+  unsubscribeListenerColumns$ = new Subject<never>();
+  private _unsubscribeAll$ = new Subject<never>();
+  _injector: Injector;
+  tablePaginator: IAtlpInputPaginator = {
+    ...atlpDefaultPaginatorData,
+  };
+  @ViewChild(CdkPortal, { static: true })
+  portalActionContent: CdkPortal;
+  atlp<%=classify(name)%>TableConfig: AtlpTableConfig = {
+    name: "atlp<%=classify(name)%>Table",
+    className: "atlp<%=classify(name)%>Table",
+  };
+  public allowedFileTypes = ["txt"];
+  public maxContainerFileUploadSize: number = 10;
+  public containerUploadUrl: string;
+  public chassisUploadErrors: any = [];
+  userInfo: IacUserAccountInfo;
+  selectedLanguage = "en";
+  SidebarName = IacSidebarName;
+  IacFilterKey = IacFilterKey;
+  @ViewChild(<%=classify(name)%>FilterComponent)
+  <%=classify(name)%>Filter: <%=classify(name)%>FilterComponent;
+  userAccountInfo: any;
+  centerCodeList: any[];
+  selectedCenter: any;
+  selectedCenterCode: any;
+  superUser: boolean;
+  centerCodeObj: any = {};
+  selectedRow: AtlpRichClassicTableEmitElTable<any>;
+
+  constructor(
+    public atplSidebarService: AtlpSidebarService,
+    private _breakpointObserver: BreakpointObserver,
+    private _iconsService: IconsService,
+    public <%=classify(name)%>ApiConfig: <%=classify(name)%>ApiConfig,
+    private atlpRichClassicTransTablePortalBridgeService: AtlpRichClassicTransTablePortalBridgeService,
+    public testAtlpRichTableMileStoneService: <%=classify(name)%>RichTableMileStoneService,
+    private atlpMileStoneBridgePortalService: AtlpMileStoneBridgePortalService,
+    private <%=classify(name)%>TableDataService: <%=classify(name)%>TableDataService,
+    private <%=classify(name)%>DataService: <%=classify(name)%>TableDataService,
+    public _userAccountInfoService: IacUserAccountInfoService,
+    private atlpTranslationService: AtlpTranslationService,
+    public translateService: TranslateService,
+  ) {
+    this._iconsService.registerIcons(this.icons);
+  }
+
+  ngOnInit(): void {
+    this.atlpMileStoneBridgePortalService.setAtlpRichTableMileStoneActionPortal(
+      this.portalActionContent
+    );
+    atlpRichClassicTableAddColumnsListenerTableModeDrag<I<%=classify(name)%>ListViewModel>(
+      this.table,
+      atlpRichClassicTableBreakpointsListenerDefault,
+      this._breakpointObserver,
+      this._unsubscribeAll$,
+      this.unsubscribeListenerColumns$
+    );
+    this.subscriptions.push(
+      this.atlpTranslationService.getCurrentLanguage().subscribe((lang) => {
+        this.selectedLanguage = lang;
+        this.atlpTranslationService.setDefaultLanguageSettings(
+          this.selectedLanguage,
+          navigationEnglish,
+          navigationArabic
+        );
+      })
+    );
+  }
+
+  toggleSidebarOpen(key): void {
+    if (key) {
+      this.atplSidebarService.getSidebar(key).toggleOpen();
+    }
+  }
+
+  ngAfterViewInit(): void {
+    this.updateTableDataAndTemplate(0, 10);
+  }
+
+  updateTableDataAndTemplate(currentPage, pageSize) {
+    this.subscriptions.push(
+      this.<%=classify(name)%>TableDataService.<%=underscore(name).toUpperCase() %>_TABLE_DATA$.subscribe(
+        (<%=classify(name)%>_data) => {
+          if (IacCheckHelper.isArray(<%=classify(name)%>_data)) {
+            this.setPortalDataAndComponentPortals(
+              <%=classify(name)%>_data,
+              currentPage,
+              pageSize
+            );
+          }
+        }
+      )
+    );
+    const payload ={};
+    this.<%=classify(name)%>DataService.searchTableData(payload);
+  }
+
+  private setPortalDataAndComponentPortals(
+    <%=classify(name)%>_data: any,
+    currentPage: any,
+    pageSize: any
+  ) {
+    this.<%=classify(name)%>CardComponent = [];
+    this.<%=classify(name)%>InfoComponent = [];
+    if (<%=classify(name)%>_data.length > 0) {
+      <%=classify(name)%>_data.forEach((<%=classify(name)%>Item) => {
+        this.<%=classify(name)%>CardComponent.push(
+          this.attachCardPortal(<%=classify(name)%>Item)
+        );
+        this.<%=classify(name)%>InfoComponent.push(
+          this.attachInfoPortal(<%=classify(name)%>Item)
+        );
+      });
+    }
+
+    this.atlpRichClassicTransTablePortalBridgeService.setAtlpRichCardTemplate(
+      this.<%=classify(name)%>CardComponent
+    );
+
+    this.atlpRichClassicTransTablePortalBridgeService.setAtlpRichInfoTemplate(
+      this.<%=classify(name)%>InfoComponent
+    );
+
+    this.table.dataSource.data = [...<%=classify(name)%>_data];
+    this.tablePaginator.totalCount = <%=classify(name)%>_data.length;
+    this.tablePaginator = { ...this.tablePaginator };
+  }
+
+  attachInfoPortal(<%=classify(name)%>InfoData) {
+    const componentPortal = new ComponentPortal(
+      <%=classify(name)%>InfoComponent,
+      null,
+      this.createInjector({ <%=classify(name)%>InfoData: <%=classify(name)%>InfoData })
+    );
+    return componentPortal;
+  }
+
+  attachCardPortal(cardData) {
+    const componentPortal = new ComponentPortal(
+      <%=classify(name)%>CardComponent,
+      null,
+      this.createInjector({ cardData: cardData })
+    );
+    return componentPortal;
+  }
+
+  private createInjector(data: any): Injector {
+    return Injector.create({
+      providers: [{ provide: ATLP_PORTAL_TABLE_DATA, useValue: data }],
+    });
+  }
+
+  clickedRow(event: AtlpRichClassicTableEmitElTable): void {
+    // console.log(event);
+    this.selectedRow = event;
+    if (event?.data) {
+
+    }
+  }
+
+  clickedCell(event: AtlpRichClassicTableEmitElTable): void {
+    // console.log(event);
+  }
+
+  onClickedInfo(event: AtlpRichClassicTableEmitElInfoTable): void {
+    // console.log(event);
+  }
+
+  onClickedInfoSelection(
+    userSelectedInfo: AtlpRichClassicTableEmitElInfoTable
+  ): void {
+    console.log(userSelectedInfo);
+  }
+
+  onSwitchView(): void {
+    this.typeViewBasic = !this.typeViewBasic;
+    if (this.table.modeIsRich) {
+      this.table.changeTableMode(AtlpRichClassicTableMode.rolled);
+    } else {
+      this.table.changeTableMode(AtlpRichClassicTableMode.rich);
+    }
+  }
+
+  onValChange(value = null): void {
+    if (value) {
+      this.table.changeTableMode(value);
+    }
+  }
+
+  onPageChange(paginationResult: IAtlpPageResponseModel) {
+    const currentPage =
+      (paginationResult.currentPage - 1) * paginationResult.pageSize;
+    this.tablePaginator.currentPage = currentPage;
+    this.tablePaginator.pageSize = currentPage + paginationResult.pageSize;
+    // this.<%=classify(name)%>DataService.searchTableData(
+    //   currentPage,
+    //   currentPage + paginationResult.pageSize
+    // );
+  }
+
+  @debounceTimeDecorator(1000, 1000)
+  search(searchWord) {
+    const wildCardSearch = searchWord.trim();
+    // this.<%=classify(name)%>TableDataService.searchTableData(
+    //   wildCardSearch,
+    //   this.tablePaginator.currentPage,
+    //   this.tablePaginator.pageSize
+    // );
+    //   this.clicks.next(wildCardSearch);
+  }
+
+  private get icons(): Array<string> {
+    return [
+      "close-white-icon",
+      "soc-icon",
+      "mob-open-menu",
+      "plus-white",
+      "table-icon-one",
+      "table-icon-two",
+      "smock-icon",
+      "print-black",
+      "copy-black",
+      "sort-ascending-fill",
+      "x-fill-purple-dark",
+      "expand_less",
+      "expand_more",
+      "warning-circle-fill",
+      "attachment",
+      "upload",
+    ];
+  }
+
+  filterDoSearch() {
+    this.<%=classify(name)%>Filter.search();
+  }
+
+  clearDoFilters = (): void => {
+    this.<%=classify(name)%>Filter.clearfilters();
+  };
+
+  onSelectDoFilter(filterData) {
+    this.<%=classify(name)%>Filter.onSelectFilter(filterData);
+  }
+
+  getDoFilterDataFn = () => {
+    return this.<%=classify(name)%>Filter.getFilterDataFn();
+  };
+
+  toggleDoFilters = (args: any): void => {
+    this.showFilters = !this.showFilters;
+  };
+
+  ngOnDestroy() {
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this._unsubscribeAll$.next();
+    this._unsubscribeAll$.complete();
+  }
+}

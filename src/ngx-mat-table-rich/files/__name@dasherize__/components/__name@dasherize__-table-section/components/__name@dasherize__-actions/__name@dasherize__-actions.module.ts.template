@@ -1,0 +1,21 @@
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { AtlpSharedModule } from "projects/@atlp/atlp-shared.module";
+import { AtlpCoreSharedModule } from "projects/@atlp/lib/shared/core-shared.module";
+import { TranslateModule } from "@ngx-translate/core";
+import { <%=classify(name)%>ActionsComponent } from "./components/<%=name%>-actions.component";
+import { MatTooltipModule } from "@angular/material/tooltip";
+
+@NgModule({
+  declarations: [<%=classify(name)%>ActionsComponent],
+  imports: [
+    CommonModule,
+    AtlpSharedModule,
+    AtlpCoreSharedModule,
+    TranslateModule,
+    MatTooltipModule,
+  ],
+  exports: [<%=classify(name)%>ActionsComponent],
+  entryComponents: [<%=classify(name)%>ActionsComponent],
+})
+export class <%=classify(name)%>ActionsModule {}

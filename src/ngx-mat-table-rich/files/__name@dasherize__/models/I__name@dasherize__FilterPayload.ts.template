@@ -1,0 +1,10 @@
+export interface I<%=classify(name)%>FilterPayload {
+  CustomsCenterCode: string;
+  ShippingAgentCode: string;
+  DONumber: string;
+  HouseBLNumber: string;
+  MasterBLNumber: string;
+  SKIP: number;
+  TAKE: number;
+  wildCardSearch?: string;
+}

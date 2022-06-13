@@ -1,0 +1,40 @@
+import { NgModule } from "@angular/core";
+import { CommonModule } from "@angular/common";
+import { <%=classify(name)%>RoutingModule } from "./<%=name%>-routing.module";
+import { <%=classify(name)%>TableModule } from "./components/<%=name%>-table/<%=name%>-table.module";
+import { PortalModule } from "@angular/cdk/portal";
+import { HttpClientModule } from "@angular/common/http";
+import { TranslateModule } from "@ngx-translate/core";
+import { AtlpSharedModule } from "projects/@atlp/atlp-shared.module";
+import { AtlpPaginationModule } from "projects/@atlp/components/atlp-pagination/atlp-pagination.module";
+import { AtlpslidebarDialogModule } from "projects/@atlp/components/atlp-slidebar-dialog/atlp-slidebar.module";
+import { AtlpSnakBarModule } from "projects/@atlp/components/snak-bars/snak-bar.module";
+import { HeaderModule } from "projects/@atlp/lib/atlp-layout/components/header/header.module";
+import { AtlpCoreSharedModule } from "projects/@atlp/lib/shared/core-shared.module";
+import { IacSharedModule } from "projects/atlp-iac-ui/projects/@iac-shared/iac-shared.module";
+import { AtlpRichClassicTableModule } from "projects/atlp-table/src/public-api";
+import { <%=classify(name)%>TableSectionModule } from "./components/<%=name%>-table-section/<%=name%>-table-section.module";
+
+@NgModule({
+  declarations: [],
+  imports:[
+    <%=classify(name)%>RoutingModule,
+    CommonModule,
+    AtlpSharedModule,
+    AtlpCoreSharedModule,
+    IacSharedModule,
+    HeaderModule,
+    HttpClientModule,
+    AtlpSnakBarModule,
+    AtlpslidebarDialogModule,
+    AtlpPaginationModule,
+    AtlpRichClassicTableModule,
+    PortalModule,
+    TranslateModule,
+    <%=classify(name)%>TableModule,
+    <%=classify(name)%>TableSectionModule
+  ],
+  exports: [],
+  providers: []
+})
+export class <%=classify(name)%>Module {}

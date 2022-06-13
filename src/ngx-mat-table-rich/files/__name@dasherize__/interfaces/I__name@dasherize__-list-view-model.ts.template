@@ -1,0 +1,14 @@
+import { I<%=classify(name)%>CardData } from "./I<%=name%>-card-data";
+import { I<%=classify(name)%>InfoData } from "./I<%=name%>-info-data";
+
+export interface I<%=classify(name)%>ListViewModel {
+  [x: string]: any;
+  id: number;
+  info: I<%=classify(name)%>InfoData;
+  voyageNo: I<%=classify(name)%>CardData;
+  masterBL: I<%=classify(name)%>CardData;
+  houseBL: I<%=classify(name)%>CardData;
+  consignee: I<%=classify(name)%>CardData;
+  shipper: I<%=classify(name)%>CardData;
+  actions: I<%=classify(name)%>CardData;
+}

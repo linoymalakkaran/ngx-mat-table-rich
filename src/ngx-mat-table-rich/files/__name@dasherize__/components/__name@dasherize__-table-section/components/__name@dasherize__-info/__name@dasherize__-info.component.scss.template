@@ -1,0 +1,11 @@
+@import "projects/@atlp/scss/variables";
+
+::ng-deep {
+  <%=name%>-info {
+    width: 100%;
+  }
+  [dir="rtl"] .mat-cell .info-checkbox {
+    width: 30px;
+    right: auto;
+  }
+}

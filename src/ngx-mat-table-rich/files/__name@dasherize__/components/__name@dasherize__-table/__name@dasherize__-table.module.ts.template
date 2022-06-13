@@ -1,0 +1,55 @@
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { IacSharedStoreModule } from "projects/atlp-iac-ui/src/store/iac-shared-store.module";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatTableModule } from "@angular/material/table";
+import { MatIconModule } from "@angular/material/icon";
+import { FlexLayoutModule } from "@angular/flex-layout";
+import { AtlpSharedModule } from "projects/@atlp/atlp-shared.module";
+import { AtlpCoreSharedModule } from "projects/@atlp/lib/shared/core-shared.module";
+import { IacSharedModule } from "projects/atlp-iac-ui/projects/@iac-shared/iac-shared.module";
+import { AtlpSearchBarModule } from "projects/@atlp/components";
+import { NgxMaterialTimepickerModule } from "ngx-material-timepicker";
+import { TranslateModule } from "@ngx-translate/core";
+import { <%=classify(name)%>TableComponent } from "./components/<%=name%>-table.component";
+import { IacSubHeaderModule } from "projects/atlp-iac-ui/projects/@iac-shared/iac-sub-header/iac-sub-header.module";
+import { <%=classify(name)%>FilterModule } from "../../filter/<%=name%>-filter.module";
+import { AtlpRichClassicTableModule } from "projects/atlp-table/src/public-api";
+import { <%=classify(name)%>TableSectionModule } from "../<%=name%>-table-section/<%=name%>-table-section.module";
+import { PortalModule } from "@angular/cdk/portal";
+import { IacSinglefileAttachmentModule } from "projects/atlp-iac-ui/projects/@iac-shared/iac-file-upload-components/attach-documents/single-file-attachment.module";
+
+const IAC_DEC_<%=underscore(name).toUpperCase() %>_TABLE_MODULE_IMPORTS = [
+  CommonModule,
+  FormsModule,
+  ReactiveFormsModule,
+  IacSharedStoreModule,
+  MatTooltipModule,
+  MatTableModule,
+  MatIconModule,
+  FlexLayoutModule,
+  AtlpSharedModule,
+  AtlpCoreSharedModule,
+  IacSinglefileAttachmentModule,
+  IacSharedModule,
+  AtlpSearchBarModule,
+  NgxMaterialTimepickerModule,
+  TranslateModule.forChild(),
+  IacSubHeaderModule,
+  <%=classify(name)%>FilterModule,
+  PortalModule,
+];
+
+@NgModule({
+  declarations: [<%=classify(name)%>TableComponent],
+  imports: [
+    ...IAC_DEC_<%=underscore(name).toUpperCase() %>_TABLE_MODULE_IMPORTS,
+    AtlpRichClassicTableModule,
+    <%=classify(name)%>TableSectionModule,
+  ],
+  exports: [<%=classify(name)%>TableComponent],
+  entryComponents: [],
+  providers: [],
+})
+export class <%=classify(name)%>TableModule {}

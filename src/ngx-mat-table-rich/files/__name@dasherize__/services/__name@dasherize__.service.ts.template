@@ -1,0 +1,22 @@
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { <%=classify(name)%>ApiConfig } from "../configs/<%=name%>-api.config";
+import { NgxUiLoaderService } from "ngx-ui-loader";
+import { SnakBarService } from "projects/@atlp/components/snak-bars/service/snak-bar-default.component";
+import { TranslateService } from "@ngx-translate/core";
+
+
+@Injectable({
+  providedIn: 'root'
+})
+export class <%=classify(name)%>Service {
+   constructor(
+    private httpClient: HttpClient,
+    private <%classify(name)%>API: <%=classify(name)%>ApiConfig,
+    private defaultSnakBar: SnakBarService,
+    private ngxServiceLoader: NgxUiLoaderService,
+    public translateService: TranslateService
+  ) {}
+
+
+}

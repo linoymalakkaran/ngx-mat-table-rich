@@ -1,0 +1,27 @@
+import { CommonModule } from "@angular/common";
+import { HttpClientModule } from "@angular/common/http";
+import { NgModule } from "@angular/core";
+import { MatIconModule } from "@angular/material/icon";
+import { AtlpSharedModule } from "projects/@atlp/atlp-shared.module";
+import { HeaderModule } from "projects/@atlp/lib/atlp-layout/components/header/header.module";
+import { AtlpCoreSharedModule } from "projects/@atlp/lib/shared/core-shared.module";
+import { IacSharedModule } from "projects/atlp-iac-ui/projects/@iac-shared/iac-shared.module";
+import { <%=classify(name)%>FilterComponent } from "./components/<%=name%>-filter-content.component";
+import { IacFiltersModule } from "projects/atlp-iac-ui/projects/@iac-shared/iac-filters/iac-filters.module";
+
+@NgModule({
+  declarations: [<%=classify(name)%>FilterComponent],
+  imports: [
+    CommonModule,
+    MatIconModule,
+    AtlpSharedModule,
+    AtlpCoreSharedModule,
+    IacSharedModule,
+    HeaderModule,
+    HttpClientModule,
+    IacFiltersModule,
+  ],
+  exports: [<%=classify(name)%>FilterComponent, IacFiltersModule],
+  providers: [],
+})
+export class <%=classify(name)%>FilterModule {}

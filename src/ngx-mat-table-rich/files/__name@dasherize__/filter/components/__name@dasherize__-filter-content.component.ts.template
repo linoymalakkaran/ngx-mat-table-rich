@@ -1,0 +1,106 @@
+import { Component, OnInit, OnDestroy, EventEmitter } from "@angular/core";
+import { Subscription } from "rxjs";
+import { FormBuilder, FormGroup } from "@angular/forms";
+import { AtlpSidebarService } from "projects/@atlp/components/sidebar/sidebar.service";
+import { SidebarName } from "projects/@atlp/core/enums/sidebar-name.enum";
+import { TranslateService } from "@ngx-translate/core";
+import { <%=classify(name)%>Service } from "../../services/<%=name%>.service";
+import { IAC_FILTER_TOKEN } from "projects/atlp-iac-ui/projects/@iac-shared/iac-filters/token/iac_filter.token";
+import { <%=classify(name)%>TableDataService } from "../../components/<%=name%>-table/services/<%=name%>-table-data.service";
+import { IacFilterModel } from "projects/atlp-iac-ui/projects/@iac-shared/iac-filters/interfaces/savedFilter";
+
+@Component({
+  selector: "<%=name%>-filter-content",
+  templateUrl: "./<%=name%>-filter-content.component.html",
+  styleUrls: ["./<%=name%>-filter-content.component.scss"],
+  providers: [
+    {
+      provide: IAC_FILTER_TOKEN,
+      useExisting: <%=classify(name)%>FilterComponent,
+    },
+  ],
+})
+export class <%=classify(name)%>FilterComponent implements OnInit, OnDestroy {
+  filterForm: FormGroup;
+  statusList: any;
+  subscriptions: Subscription[] = [];
+  fullStatusList: any;
+  statusTypeList: any;
+  onSearch: EventEmitter<any> = new EventEmitter<any>();
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private atplSidebarService: AtlpSidebarService,
+    public <%=classify(name)%>TableDataService: <%=classify(name)%>TableDataService,
+    public translateService: TranslateService,
+    public iacDec<%=classify(name)%>Service: <%=classify(name)%>Service
+  ) {}
+
+  ngOnInit(): void {
+    this.initSubscriptions();
+  }
+
+  get formValidator() {
+    return this.filterForm.controls;
+  }
+
+  private initSubscriptions(): void {
+    this.createForm();
+  }
+
+  private createForm() {
+    let formFields;
+    this.filterForm = this.formBuilder.group({ ...formFields });
+  }
+
+  getFormGroup(): FormGroup {
+    return this.filterForm;
+  }
+
+  onSelectFilter(filterData) {
+    this.filterForm.patchValue({});
+  }
+
+  getFilterDataFn() {
+    const filterData: IacFilterModel[] = [];
+    Object.keys(this.filterForm.controls).forEach((key) => {
+      if (
+        this.filterForm.get(key).value !== "" &&
+        this.filterForm.get(key).value !== null
+      ) {
+        filterData.push({
+          filterBy: key,
+          dispalyName: key,
+          filterType: "equal",
+          value: this.filterForm.get(key).value?.toUpperCase(),
+          originalVal: this.filterForm.get(key).value,
+        });
+      }
+    });
+    return filterData;
+  }
+
+  getValidationErrorMsg(colInfo) {
+    let validationMsg = "";
+
+    return validationMsg;
+  }
+
+  toggleSidebarOpen(event) {
+    this.atplSidebarService.getSidebar(SidebarName.filtersSidebar).close();
+  }
+
+  clearfilters() {
+    this.filterForm.reset();
+  }
+
+  search() {
+    this.<%=classify(name)%>TableDataService.searchTableData({});
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((sub) => {
+      sub.unsubscribe();
+    });
+  }
+}

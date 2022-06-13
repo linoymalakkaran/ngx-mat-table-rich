@@ -1,0 +1,8 @@
+<ng-container [ngSwitch]="cardData?.status">
+  <!-- Start Default status -->
+  <ng-container *ngSwitchDefault> </ng-container>
+  <!-- Start Default status -->
+  <ng-container *ngIf="tableType === 'collapse'">
+    {{ cardData?.statusText }}
+  </ng-container>
+</ng-container>

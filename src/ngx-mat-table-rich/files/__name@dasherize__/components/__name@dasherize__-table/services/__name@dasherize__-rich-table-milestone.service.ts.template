@@ -1,0 +1,98 @@
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { GraphData } from "projects/@atlp/components/atlp-graph-selection/models/graph";
+import { Observable, of } from "rxjs";
+import {
+  AtlpGraphResponseModel,
+  IAtlpRichTableMileStoneService,
+} from "projects/atlp-table/src/lib/component/atlp-rich-table-milestone/models/atlp-rich-table-milestone-service.interface";
+import { DecSharedLookUpAPI } from "projects/atlp-iac-ui/projects/iac-dec-ui/src/shared/config/dec-shared-lookup.config";
+import { DatePipe } from "@angular/common";
+import { IacDecGraphData } from "projects/atlp-iac-ui/projects/iac-dec-ui/src/shared/iac-dec-trans-animation/models/iac-dec-graph-response.model";
+import { IacApiBaseResponse } from "projects/atlp-iac-ui/projects/@iac-shared/models/base.response";
+import { map } from "rxjs/operators";
+import { milestone_static_data } from "../../../data-provider/<%=name%>-milestone-data";
+
+@Injectable({
+  providedIn: "root",
+})
+export class <%=classify(name)%>RichTableMileStoneService
+  implements IAtlpRichTableMileStoneService
+{
+  constructor(
+    private http: HttpClient,
+    private api: DecSharedLookUpAPI,
+    private datePipe: DatePipe
+  ) {}
+
+  getGraphData(
+    payload: any,
+    selectedLanguage: string
+  ): Observable<AtlpGraphResponseModel> {
+    payload = {
+      iacDecTransctionAnimationtypes: "<%=underscore(name).toUpperCase() %>",
+    };
+    // return this.http
+    //   .post<IacApiBaseResponse<IacDecGraphData>>(
+    //     this.api.SAL_GRAPH_DATA(
+    //       payload.iacDecTransctionAnimationtypes as IacDecTransctionAnimationtypes,
+    //       payload.draftId
+    //     ),
+    //     {}
+    //   )
+    //   .pipe(
+    //     map((graphData) => {
+    //       return this.getMappedGraphData(graphData, selectedLanguage);
+    //     })
+    //   );
+    return of(milestone_static_data).pipe(
+      map((graphData) => {
+        return this.getMappedGraphData(graphData, selectedLanguage);
+      })
+    );
+  }
+
+  private getMappedGraphData(
+    graphResponseData: IacApiBaseResponse<IacDecGraphData>,
+    selectedLanguage: string
+  ): AtlpGraphResponseModel {
+    const graphList: GraphData[] =
+      graphResponseData?.Data?.GraphData?.map((grapItem) => {
+        return {
+          stepTitle:
+            selectedLanguage.toLocaleLowerCase() === "en"
+              ? grapItem.StepTitle
+              : grapItem.StepTitleArb,
+          stepIcon: this.getGraphStepIcons(grapItem.StepIcon),
+          description:
+            selectedLanguage.toLocaleLowerCase() === "en"
+              ? grapItem.Description
+              : grapItem.DescriptionArb,
+          metaData: grapItem.MetaData,
+          eventDate: this.datePipe.transform(
+            grapItem.EventDate,
+            "dd/MM/yyyy hh:mm a"
+          ),
+          isCompleted: grapItem.CompletedStatus.toUpperCase() === "COMPLETED",
+        };
+      }) || [];
+    return {
+      graph: {
+        graphTitle: graphResponseData.Data.GraphTitle,
+        data: graphList,
+      },
+      percentageComplete: graphResponseData.Data.PercentageComplete,
+    };
+  }
+
+  private getGraphStepIcons(stepIcon): string {
+    switch (stepIcon?.toLowerCase()) {
+      case "draftdate": {
+        return "document-icon";
+      }
+      default: {
+        return "schedule-icon";
+      }
+    }
+  }
+}

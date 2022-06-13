@@ -1,0 +1,16 @@
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { <%= classify(name) %>TableComponent } from './components/<%=name%>-table/components/<%=name%>-table.component';
+
+const routes = [
+  {
+    path: "",
+    component: <%= classify(name) %>TableComponent,
+  },
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class <%= classify(name) %>RoutingModule { }

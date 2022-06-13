@@ -1,0 +1,130 @@
+<div class="voyage-card">
+  <ng-container [ngSwitch]="cardData?.status">
+    <!-- Start approved masterBL -->
+    <div
+      class="voyage-card-wrap"
+      *ngSwitchCase="CardStatus.masterBL"
+      fxLayout="column"
+      fxLayoutAlign="start start"
+    >
+      <div
+        class="voyage-card-icon"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+      >
+        <mat-icon svgIcon="employee-file-fill" aria-hidden="false"></mat-icon>
+      </div>
+      <span class="voyage-card-status approved">{{
+        cardData?.statusText
+      }}</span>
+    </div>
+    <!-- End approved masterBL -->
+
+    <!-- Start voyageNo status -->
+    <div
+      class="voyage-card-wrap"
+      *ngSwitchCase="CardStatus.voyageNo"
+      fxLayout="column"
+      fxLayoutAlign="start start"
+    >
+      <div
+        class="voyage-card-icon"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+      >
+        <mat-icon svgIcon="voyage-icon" aria-hidden="false"></mat-icon>
+      </div>
+      <span class="voyage-card-status approved">{{
+        cardData?.statusText
+      }}</span>
+    </div>
+    <!-- End voyageNo status -->
+
+    <div
+      class="voyage-card-wrap"
+      *ngSwitchCase="CardStatus.houseBL"
+      fxLayout="column"
+      fxLayoutAlign="start start"
+    >
+      <div
+        class="voyage-card-icon"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+      >
+        <mat-icon
+          class="medium-icon"
+          svgIcon="house"
+          aria-hidden="false"
+        ></mat-icon>
+      </div>
+      <span class="voyage-card-status rejected">{{
+        cardData?.statusText
+      }}</span>
+    </div>
+    <div
+      class="voyage-card-wrap"
+      *ngSwitchCase="CardStatus.consignee"
+      fxLayout="column"
+      fxLayoutAlign="start start"
+    >
+      <div
+        class="voyage-card-icon"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+      >
+        <mat-icon
+          class="medium-icon"
+          svgIcon="person"
+          aria-hidden="false"
+        ></mat-icon>
+      </div>
+      <span class="voyage-card-status pending">{{ cardData?.statusText }}</span>
+    </div>
+
+    <div
+      class="voyage-card-wrap"
+      *ngSwitchCase="CardStatus.shipper"
+      fxLayout="column"
+      fxLayoutAlign="start start"
+    >
+      <div
+        class="voyage-card-icon"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+      >
+        <mat-icon svgIcon="voyage-icon-two" aria-hidden="false"></mat-icon>
+      </div>
+      <span class="voyage-card-status add">{{ cardData?.statusText }}</span>
+      <div
+        class="voyage-card-footer"
+        fxLayout="column"
+        fxLayoutAlign="start start"
+      >
+        <span class="voyage-card-descr">{{ cardData?.textDescr }}</span>
+      </div>
+    </div>
+
+    <div
+      class="voyage-card-wrap"
+      *ngSwitchCase="CardStatus.actions"
+      fxLayout="column"
+      fxLayoutAlign="start start"
+    >
+      <div
+        class="voyage-card-icon"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+      >
+        <mat-icon
+          class="big-icon"
+          svgIcon="addLL-icon"
+          aria-hidden="false"
+        ></mat-icon>
+      </div>
+      <span *ngIf="cardData?.addition" class="voyage-card-addition">{{
+        cardData?.addition
+      }}</span>
+      <span class="voyage-card-status add">{{ cardData?.statusText }}</span>
+    </div>
+  </ng-container>
+</div>

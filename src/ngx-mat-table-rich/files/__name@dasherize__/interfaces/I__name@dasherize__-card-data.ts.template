@@ -1,0 +1,14 @@
+import { <%=classify(name)%>CardStatus } from "../enums/<%=name%>-card-status.enum";
+
+export interface I<%=classify(name)%>CardData {
+  status?: <%=classify(name)%>CardStatus;
+  statusText?: string;
+  id?: number;
+  time?: string;
+  date?: string;
+  textInfo?: string;
+  textDescr?: string;
+  update?: string;
+  addition?: string;
+  duration?: number;
+}

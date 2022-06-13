@@ -1,0 +1,127 @@
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { NgxUiLoaderService } from "ngx-ui-loader";
+import { IacCheckHelper } from "projects/atlp-iac-ui/projects/@iac-shared/helper/check";
+import { BehaviorSubject } from "rxjs";
+import { I<%=classify(name)%>ListViewModel } from "../../../interfaces";
+import { <%=classify(name)%>ApiConfig } from "../../../configs/<%=name%>-api.config";
+import { AtlpRichClassicTableEmitElInfoTable } from "projects/atlp-table/src/lib/models/atlp-rich-classic-table-interfaces";
+import { <%=classify(name)%>Data } from "../../../data-provider/<%=name%>-data";
+import { <%=classify(name)%>CardStatus } from "../../../enums/<%=name%>-card-status.enum";
+
+@Injectable({
+  providedIn: "root",
+})
+export class <%=classify(name)%>TableDataService {
+  <%=underscore(name).toUpperCase() %>_TABLE_DATA: I<%=classify(name)%>ListViewModel[] = [];
+  <%=underscore(name).toUpperCase() %>_TABLE_DATA$: BehaviorSubject<any> = new BehaviorSubject<
+    I<%=classify(name)%>ListViewModel[]
+  >([]);
+    public userSelectedInfo$: BehaviorSubject<AtlpRichClassicTableEmitElInfoTable> =
+  new BehaviorSubject<AtlpRichClassicTableEmitElInfoTable>(null);
+
+  constructor(
+    public httpClient: HttpClient,
+    public <%=classify(name)%>ApiConfig: <%=classify(name)%>ApiConfig,
+    private ngxLoaderService: NgxUiLoaderService
+  ) {}
+
+  async searchTableData(payload) {
+    this.ngxLoaderService.start();
+    try {
+      let response = await new Promise((resolve, reject) => {
+       //this.httpClient
+       //  .post(this.<%=classify(name)%>ApiConfig.GET_ALL_<%=underscore(name).toUpperCase() %>(), payload)
+       //  .subscribe(
+       //    (data: any) => {
+       //      this.ngxLoaderService.stop();
+       //      const <%=classify(name)%>List = [];
+       //      <%=classify(name)%>List.push(data?.Data);
+       //      resolve(<%=classify(name)%>List);
+       //    },
+       //    (err) => {
+       //      console.log("error failed: => ", err);
+       //      this.ngxLoaderService.stop();
+       //    }
+       //  );
+         this.ngxLoaderService.stop();
+         resolve(<%=classify(name)%>Data.Data);
+      });
+      if (IacCheckHelper.isNull(response)) {
+        this.<%=underscore(name).toUpperCase() %>_TABLE_DATA = [];
+        return [...this.<%=underscore(name).toUpperCase() %>_TABLE_DATA];
+      }
+      this.<%=underscore(name).toUpperCase() %>_TABLE_DATA = [...this.mapEntitiesToModels(response)];
+      this.<%=underscore(name).toUpperCase() %>_TABLE_DATA$.next([...this.<%=underscore(name).toUpperCase() %>_TABLE_DATA]);
+      return [...this.<%=underscore(name).toUpperCase() %>_TABLE_DATA];
+    } catch (error) {
+      console.log(
+        "searchTableData for <%=underscore(name).toUpperCase() %> failed: => ",
+        error
+      );
+      this.ngxLoaderService.stop();
+      this.<%=underscore(name).toUpperCase() %>_TABLE_DATA$.next([]);
+      return [];
+    }
+  }
+
+  mapEntitiesToModels(data: any): I<%=classify(name)%>ListViewModel[] {
+    let _results = [];
+    data.forEach((record) => {
+      const requiredOBj = {
+        id: 1,
+        info: {
+          VesselCode: record.VesselCode,
+          dONumber: record.DONumber,
+          port: record.PortEngName,
+          arrivaltime: record.ArrivalDate,
+          arrivalDate: record.ArrivalDate,
+          billType: record.BillEngType,
+        },
+        VesselCode: {
+          status: <%=classify(name)%>CardStatus.shipper,
+          statusText: record.VesselCode,
+        },
+        voyageNo: {
+          status: <%=classify(name)%>CardStatus.voyageNo,
+          statusText: record.VoyageNumber,
+        },
+        port: {
+          status: <%=classify(name)%>CardStatus.shipper,
+          statusText: record.PortEngName,
+        },
+        arrivalDate: {
+          status: <%=classify(name)%>CardStatus.shipper,
+          statusText: record.ArrivalDate,
+        },
+        billType: {
+          status: <%=classify(name)%>CardStatus.shipper,
+          statusText: record.BillType,
+        },
+        masterBL: {
+          status: <%=classify(name)%>CardStatus.masterBL,
+          statusText: record.MasterBlNumber,
+        },
+        houseBL: {
+          status: <%=classify(name)%>CardStatus.houseBL,
+          statusText: record.HouseBlNumber,
+        },
+        consignee: {
+          status: <%=classify(name)%>CardStatus.consignee,
+          statusText: record.Consignee,
+        },
+        shipper: {
+          status: <%=classify(name)%>CardStatus.shipper,
+          statusText: record.Shipper,
+        },
+        agentCode: {
+          status: <%=classify(name)%>CardStatus.agentCode,
+          statusText: record.AgentCode,
+        },
+      };
+
+      _results.push(requiredOBj);
+    });
+    return _results;
+  }
+}

@@ -1,0 +1,20 @@
+<div class="atlp-table-flex-container atlp-table-control-button-margin">
+  <button
+    (click)="deleteRow()"
+    mat-raised-button
+    color="warn"
+  >
+    Delete
+  </button>
+  <button
+    mat-raised-button
+    color="basic"
+    class="icon"
+    (click)="editDetails(SidebarNameIac.<%=classify(name)%>Edit)"
+    title="{{ 'EDIT' | translate }}"
+    matTooltip="{{ 'AddDoInformation' | translate }}"
+  >
+    <mat-icon svgIcon="icon-edit" aria-hidden="false"></mat-icon>
+    {{ "EDIT" | translate }}
+  </button>
+</div>

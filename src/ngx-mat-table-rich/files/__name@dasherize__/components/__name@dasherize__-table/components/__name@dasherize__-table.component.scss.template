@@ -1,0 +1,94 @@
+.code-center-width {
+  padding: 10px;
+  font-size: 16px;
+  margin-left: 8px;
+  margin-right: -12px;
+}
+
+.CenterCode-width {
+  width: 215px;
+  line-height: 15px !important;
+  white-space: initial;
+}
+
+.center-code-letter {
+  display: flex;
+  font-style: italic;
+  font-size: 12px;
+  color: #8f6bb9;
+}
+
+.center-code-wrapper-outter {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.center-code-wrapper-inner {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.text-overflow-switch-user {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.center-code-button {
+  height: 31px;
+  max-width: 217px;
+}
+.mr-20 {
+  margin-right: 20px;
+}
+::ng-deep {
+  atlp-pagination {
+    display: none;
+  }
+}
+.fileControl-wrapper {
+  position: relative;
+
+  .mat-toolbar-single-row {
+      height: auto !important;
+      background: transparent;
+
+      button {
+          text-align: center;
+          width: 100%;
+      }
+  }
+}
+
+#fileControlInput {
+  position: absolute;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0;
+  height: 100%;
+  width: 100%;
+  left: 0px;
+  top: 0px;
+}
+
+.fileModel {
+  height: 0;
+  width: 0;
+}
+
+.mat-toolbar-row,
+.mat-toolbar-single-row {
+  padding: 0px !important;
+}
+
+.disabled {
+opacity: 0.4;
+pointer-events: none;
+}
+
+input[type=file], /* FF, IE7+, chrome (except button) */
+input[type=file]::-webkit-file-upload-button { /* chromes and blink button */
+  cursor: pointer;
+}

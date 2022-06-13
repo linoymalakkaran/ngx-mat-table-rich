@@ -1,0 +1,167 @@
+<div
+  class="wrapper overlay-blur"
+  [class.blur]="atplSidebarService.allOpenedSuperimposedSidebar.length > 0"
+  (click)="
+    atplSidebarService.allOpenedSuperimposedSidebar.length > 0
+      ? $event.stopPropagation()
+      : null
+  "
+  fxFlex="none"
+  fxLayout="column"
+  fxLayoutAlign="start none"
+>
+  <app-iac-sub-header
+    [isDeclarationModule]="false"
+    [subModuleTitle]="'<%=classify(name)%>'"
+    [tableContentTemplate]="tableContentTemplate"
+    [filterTemplate]="<%=classify(name)%>filterTemplate"
+  >
+    <ng-container class="iac-common-button-section">
+      <!-- <atlp-search-bar (keyup)="search($event.target.value)"></atlp-search-bar> -->
+      <button
+        mat-raised-button
+        color="basic"
+        class="icon filter-btn ml-12 mr-20"
+        (click)="toggleSidebarOpen(SidebarName.filtersSidebar)"
+      >
+        <mat-icon svgIcon="filter-icon" aria-hidden="false"></mat-icon>
+        {{ "FILTER" | translate }}
+      </button>
+      <button
+        class="mr-12"
+        mat-raised-button
+        [class.active]="table.modeCustomize$ | async"
+        mat-raised-button
+        color="basic"
+        (click)="table.toggleModeCustomize()"
+      >
+        {{ "CUSTOMIZE" | translate }}
+      </button>
+    </ng-container>
+
+    <ng-container class="iac-table-switch-header-section">
+      <ng-container *ngIf="typeViewBasic">
+        <mat-button-toggle-group
+          class="basic-toggle"
+          #group="matButtonToggleGroup"
+        >
+          <mat-button-toggle
+            value="rolled"
+            checked="true"
+            (change)="onValChange($event.value)"
+          >
+            <mat-icon svgIcon="table-icon-two" aria-hidden="false"></mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle
+            value="collapse"
+            (change)="onValChange($event.value)"
+          >
+            <mat-icon svgIcon="table-icon-one" aria-hidden="false"></mat-icon>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </ng-container>
+      <mat-button-toggle-group
+        class="ml-12"
+        #tableViewGroup="matButtonToggleGroup"
+      >
+        <mat-button-toggle
+          checked="true"
+          value="rich"
+          (change)="onSwitchView()"
+        >
+          {{ "RICH" | translate }}</mat-button-toggle
+        >
+        <mat-button-toggle value="classic" (change)="onSwitchView()">
+          {{ "CLASSIC" | translate }}</mat-button-toggle
+        >
+      </mat-button-toggle-group>
+      <button
+        mat-button
+        color="basic"
+        class="filter-btn ml-12 center-code-button"
+        [matMenuTriggerFor]="menu"
+        #menuTrigger="matMenuTrigger"
+        type="button"
+      >
+        <div class="center-code-wrapper-outter">
+          <div class="center-code-wrapper-inner">
+            <div class="center-code-letter">
+              {{ "CenterCode" | translate | uppercase }}
+            </div>
+            <div class="text-overflow-switch-user">
+              {{ selectedCenter?.Code }} {{ selectedCenter?.NameEnglish }}
+              {{ selectedCenter?.NameArabic }}
+            </div>
+          </div>
+          <mat-icon
+            svgIcon="{{ menuTrigger.menuOpen ? 'expand_less' : 'expand_more' }}"
+          ></mat-icon>
+        </div>
+      </button>
+      <mat-menu #menu="matMenu">
+        <ng-container *ngFor="let centerCodeItem of centerCodeList">
+          <button
+            class="CenterCode-width"
+            mat-menu-item
+            (click)="onCenterCodeChange(centerCodeItem)"
+          >
+            {{ centerCodeItem.Code }} {{ centerCodeItem.NameEnglish }}
+            {{ centerCodeItem.NameArabic }}
+          </button>
+        </ng-container>
+      </mat-menu>
+    </ng-container>
+  </app-iac-sub-header>
+</div>
+
+<ng-template #tableContentTemplate>
+  <atlp-rich-classic-table
+    [table]="table"
+    [atlpTableConfig]="atlp<%=classify(name)%>TableConfig"
+    [clickedRow]="true"
+    [source]="testAtlpRichTableMileStoneService"
+    [tablePaginator]=""
+    (onClickedRow)="clickedRow($event)"
+    (onClickedCell)="clickedCell($event)"
+    (onPageChange)="onPageChange($event)"
+    (onClickedInfo)="onClickedInfo($event)"
+    (onClickedInfoSelection)="onClickedInfoSelection($event)"
+  >
+  </atlp-rich-classic-table>
+</ng-template>
+<!-- [tablePaginator]="tablePaginator" -->
+
+<ng-template #<%=classify(name)%>filterTemplate>
+  <atlp-sidebar
+    class="filters-sidebar filter-content-width"
+    [name]="SidebarName.filtersSidebar"
+    position="left"
+    [folded]="false"
+    [invisibleOverlay]="true"
+    [isTemplate]="true"
+  >
+    <ng-template #AtlpSidebarComponentContent>
+      <iac-filters
+        [toggleFilters]="toggleDoFilters"
+        [dataType]="'service'"
+        title="{{ '<%=underscore(name).toUpperCase() %>_FILTER' | translate }}"
+        sectiontitle1="{{ 'SEARCHBY' | translate }}"
+        (onSearch)="filterDoSearch()"
+        (onResetFilter)="clearDoFilters()"
+        [filterServices]="<%=classify(name)%>FilterService"
+        [service]="<%=classify(name)%>FilterService"
+        [getFilterDataFn]="getDoFilterDataFn"
+        [key]="IacFilterKey.iac<%=classify(name)%>Filter"
+        (onSelectFilter)="onSelectDoFilter($event)"
+      >
+        <<%=name%>-filter-content
+          class="filter-body"
+        ></<%=name%>-filter-content>
+      </iac-filters>
+    </ng-template>
+  </atlp-sidebar>
+</ng-template>
+
+<ng-container *cdkPortal>
+  <<%=name%>-actions></<%=name%>-actions>
+</ng-container>

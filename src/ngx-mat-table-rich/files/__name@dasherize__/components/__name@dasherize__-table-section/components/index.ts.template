@@ -1,0 +1,3 @@
+export * from "./<%=name%>-info/<%=name%>-info.component";
+export * from "./<%=name%>-card/<%=name%>-card.component";
+export * from "./<%=name%>-status/<%=name%>-status.component";

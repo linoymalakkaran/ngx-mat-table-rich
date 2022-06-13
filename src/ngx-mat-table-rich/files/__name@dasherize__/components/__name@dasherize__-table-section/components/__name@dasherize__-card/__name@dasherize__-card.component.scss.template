@@ -1,0 +1,7 @@
+@import "projects/@atlp/scss/variables";
+
+::ng-deep {
+  <%=name%>-card {
+    width: 100%;
+  }
+}

@@ -1,0 +1,26 @@
+import { Injectable } from "@angular/core";
+import { IacEnvService } from "projects/atlp-iac-ui/src/environments/env.service";
+
+@Injectable({
+  providedIn: 'root'
+})
+export class <%=classify(name) %>ApiConfig {
+
+  constructor(private api: IacEnvService) {}
+
+  GET_API_BASEURL = (): string => `${this.api.baseApiUrl}`;
+  GET_GATEWAY_BASEURL = (): string => `${this.api.baseGatewayUrl}`;
+  GET_SVM_BASEURL = (): string => `${this.api.baseSVMUrl}`;
+
+  GET_FILTERS = (filterType): string =>
+  `${this.GET_API_BASEURL()}Customs/Job/GetSavedCustomizedFilters?FilterTypeName=${filterType}`;
+
+  SAVE_FILTER = (): string =>
+    `${this.GET_API_BASEURL()}Customs/Job/SaveCustomizedFilters`;
+
+  DELETE_FILTER = (filterId): string =>
+    `${this.GET_API_BASEURL()}Customs/Job/DeleteFilter?filterId=${filterId}`;
+
+  GET_ALL_<%=underscore(name).toUpperCase() %> = (): string =>
+    `${this.GET_API_BASEURL()}`;
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "$id": "ngxMatTableRich",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "description": "ngxMatTableRich Module Name",
+      "x-prompt": "What is the entity name?"
+    },
+    "project": {
+      "type": "string",
+      "$default": {
+        "$source": "argv",
+        "index": 1
+      },
+      "description": "Project name where you want to generate the module",
+      "x-prompt": "Project name where you want to generate the module?"
+    },
+    "path": {
+      "type": "string",
+      "$default": {
+        "$source": "argv",
+        "index": 2
+      },
+      "description": "Path of the module you want to generate",
+      "x-prompt": "Path of the module you want to generate?"
+    }
+  },
+  "required": ["name", "project", "path"]
+}

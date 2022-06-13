@@ -1,0 +1,56 @@
+@import "projects/@atlp/scss/variables";
+@import "projects/@atlp/scss/mixins";
+
+.dialog-content-wrap {
+  width: 260px;
+  button {
+    border: none !important;
+    background: none !important;
+    margin-bottom: 18px;
+    @include padding-left(28px);
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.dialog-popup {
+  position: relative;
+  overflow: visible;
+}
+
+.close-dialog {
+  position: absolute;
+  width: 100%;
+  @include left(0);
+  bottom: -69px;
+}
+
+::ng-deep {
+  .custom-dialog-container {
+    .mat-dialog-container {
+      overflow: visible !important;
+      background-color: transparent;
+    }
+  }
+}
+
+.atlp-table-control-button-margin button {
+  @include margin-right(15px);
+}
+
+.atlp-table-flex-container {
+  flex: 1 1 0%;
+  box-sizing: border-box;
+  flex-direction: row;
+  display: flex;
+  place-content: center flex-end;
+  align-items: center;
+  @media screen and (max-width: 1024px) {
+    flex-direction: column;
+    display: flex;
+    place-content: center flex-end;
+    align-items: flex-start;
+    gap: 9px;
+  }
+}

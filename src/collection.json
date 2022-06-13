@@ -1,0 +1,11 @@
+{
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "ngx-mat-table-rich": {
+      "description": "It is an anglar custom schematics, allow you to scaffold main files for any module in less time and efforts.",
+      "factory": "./ngx-mat-table-rich/index#ngxMatTableRich",
+      "schema": "./ngx-mat-table-rich/schema.json",
+      "aliases": ["ngxRich"]
+    }
+  }
+}

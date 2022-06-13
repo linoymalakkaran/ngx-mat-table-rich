@@ -1,0 +1,49 @@
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { MatTooltipModule } from "@angular/material/tooltip";
+import { MatTableModule } from "@angular/material/table";
+import { MatIconModule } from "@angular/material/icon";
+import { FlexLayoutModule } from "@angular/flex-layout";
+import { AtlpSharedModule } from "projects/@atlp/atlp-shared.module";
+import { AtlpCoreSharedModule } from "projects/@atlp/lib/shared/core-shared.module";
+import { IacSharedModule } from "projects/atlp-iac-ui/projects/@iac-shared/iac-shared.module";
+import { AtlpSearchBarModule } from "projects/@atlp/components";
+import { NgxMaterialTimepickerModule } from "ngx-material-timepicker";
+import { TranslateModule } from "@ngx-translate/core";
+import { <%=classify(name)%>CardComponent } from "./components/<%=name%>-card/<%=name%>-card.component";
+import { <%=classify(name)%>InfoComponent } from "./components/<%=name%>-info/<%=name%>-info.component";
+import { <%=classify(name)%>StatusComponent } from "./components/<%=name%>-status/<%=name%>-status.component";
+import { <%=classify(name)%>ActionsModule } from "./components/<%=name%>-actions/<%=name%>-actions.module";
+
+const IAC_DEC_<%=underscore(name).toUpperCase() %>_TABLE_SECTION_MODULE_DECLARATIONS = [
+  <%=classify(name)%>CardComponent,
+  <%=classify(name)%>InfoComponent,
+  <%=classify(name)%>StatusComponent,
+];
+
+@NgModule({
+  declarations: [...IAC_DEC_<%=underscore(name).toUpperCase() %>_TABLE_SECTION_MODULE_DECLARATIONS],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatTooltipModule,
+    MatTableModule,
+    MatIconModule,
+    FlexLayoutModule,
+    AtlpSharedModule,
+    AtlpCoreSharedModule,
+    IacSharedModule,
+    AtlpSearchBarModule,
+    NgxMaterialTimepickerModule,
+    TranslateModule.forChild(),
+  ],
+  exports: [
+    ...IAC_DEC_<%=underscore(name).toUpperCase() %>_TABLE_SECTION_MODULE_DECLARATIONS,
+    <%=classify(name)%>ActionsModule,
+  ],
+  entryComponents: [...IAC_DEC_<%=underscore(name).toUpperCase() %>_TABLE_SECTION_MODULE_DECLARATIONS],
+  providers: [],
+})
+export class <%=classify(name)%>TableSectionModule {}

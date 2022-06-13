@@ -1,0 +1,65 @@
+<div class="voyage-info" [class.active]="isSelected">
+  <div class="voyage-info-wrap">
+    <div class="voyage-img-mob">
+      <img src="assets/images/voyage-img.png" alt="" />
+    </div>
+    <div class="voyage-info-head" fxLayout="row" fxLayoutAlign="start center">
+      <div class="voyage-info-soc-icon">
+        <mat-icon svgIcon="message-icon" aria-hidden="false"></mat-icon>
+      </div>
+      <h2 class="voyage-info-name">{{ "Vessel" | translate }}</h2>
+      <div class="voyage-info-status">
+        <!-- *ngIf="<%=classify(name)%>InfoData?.status === 'warning'" -->
+        <!-- <mat-icon svgIcon="triangle-icon" aria-hidden="false"></mat-icon> -->
+      </div>
+    </div>
+    <div
+      class="voyage-info-info-row"
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+    >
+      <span class="voyage-info-id">{{ <%=classify(name)%>InfoData?.VesselCode }}</span>
+      <div class="voyage-info-info" fxLayout="row" fxLayoutAlign="end center">
+        <div class="voyage-info-name">
+          {{ "DO_NUMBER" | translate }}
+        </div>
+        <h3 class="voyage-info-info-title">
+          : {{ <%=classify(name)%>InfoData?.dONumber }}
+        </h3>
+      </div>
+    </div>
+    <div
+      class="voyage-info-row"
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+    >
+      <div
+        class="voyage-info-col"
+        fxLayout="column"
+        fxLayoutAlign="center center"
+      >
+        <span class="voyage-info-text">{{ "Port" | translate }}</span>
+        <span class="voyage-info-text">{{ <%=classify(name)%>InfoData?.port }}</span>
+      </div>
+      <div
+        class="voyage-info-col"
+        fxLayout="column"
+        fxLayoutAlign="center center"
+      >
+        <span class="voyage-info-text">{{ "billTypeLbl" | translate }}</span>
+        <span class="voyage-info-text">{{
+          <%=classify(name)%>InfoData?.billType
+        }}</span>
+      </div>
+      <div class="voyage-info-col" fxLayout="column" fxLayoutAlign="center end">
+        <span class="voyage-info-text">{{ "ArrivalDate" | translate }}</span>
+        <span class="voyage-info-text">{{
+          <%=classify(name)%>InfoData?.arrivaltime | date: "dd/MM/yyyy"
+        }}</span>
+        <span class="voyage-info-text">{{
+          <%=classify(name)%>InfoData?.arrivaltime | date: "hh:mm a"
+        }}</span>
+      </div>
+    </div>
+  </div>
+</div>

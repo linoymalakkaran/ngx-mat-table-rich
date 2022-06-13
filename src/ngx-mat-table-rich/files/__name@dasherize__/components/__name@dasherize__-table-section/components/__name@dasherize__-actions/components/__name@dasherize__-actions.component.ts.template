@@ -1,0 +1,66 @@
+import {
+  Component,
+  OnInit,
+} from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { AtlpSidebarService } from "projects/@atlp/components/sidebar/sidebar.service";
+import { IconsService } from "projects/@atlp/services/icons.service";
+import { IacSidebarName } from "projects/atlp-iac-ui/projects/@iac-shared/models/enums/sidebar-name.enum";
+import { AtlpMileStoneBridgePortalService } from "projects/atlp-table/src/lib/component/atlp-rich-table-milestone/services/atlp-rich-table-milestone-bridge.service";
+import { Subscription } from "rxjs";
+
+@Component({
+  selector: "<%=name%>-actions",
+  templateUrl: "./<%=name%>-actions.component.html",
+  styleUrls: ["./<%=name%>-actions.component.scss"],
+})
+export class <%=classify(name)%>ActionsComponent implements OnInit {
+  SidebarNameIac = IacSidebarName;
+  subscriptions: Subscription[] = [];
+  transData: any;
+
+  constructor(
+    private _iconsService: IconsService,
+    public dialog: MatDialog,
+    public atplSidebarService: AtlpSidebarService,
+    private atlpMileStoneBridgePortalService: AtlpMileStoneBridgePortalService,
+  ) {
+    this._iconsService.registerIcons(this.icons);
+  }
+
+  ngOnInit(): void {
+    this.subscriptions.push(
+      this.atlpMileStoneBridgePortalService.atlpMileStoneActionPortalData$.subscribe(
+        (transData: any) => {
+          if (transData) {
+            this.transData = transData;
+          }
+        }
+      )
+    );
+  }
+
+  deleteRow() {
+     alert("deleteRow, pls check console for data.");
+  }
+
+  editDetails(key) {
+    this.atplSidebarService.getSidebar(key).toggleOpen();
+  }
+
+  toggleSidebarOpen(key: string) {
+    this.atplSidebarService.getSidebar(key).toggleOpen();
+  }
+
+  private get icons(): Array<string> {
+    return [
+      "icon-edit",
+    ];
+  }
+
+  ngOnDestroy() {
+    this.subscriptions && this.subscriptions.length > 0
+      ? this.subscriptions.forEach((sub) => sub.unsubscribe())
+      : null;
+  }
+}

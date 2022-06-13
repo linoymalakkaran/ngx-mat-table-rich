@@ -1,0 +1,37 @@
+{
+  "name": "ngx-mat-table-rich",
+  "version": "1.0.0",
+  "description": "It is an anglar custom schematics, allow you to scaffold main files for any module in less time and efforts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && jasmine src/**/*_spec.js"
+  },
+  "keywords": [
+    "schematics",
+    "Angular Schematics",
+    "Angular",
+    "Scaffolding"
+  ],
+  "author": "Linoy Pappachan Malakkaran",
+  "license": "MIT",
+  "schematics": "./src/collection.json",
+  "dependencies": {
+    "@angular-devkit/core": "^13.2.5",
+    "@angular-devkit/schematics": "^13.2.5",
+    "typescript": "~4.5.2"
+  },
+  "devDependencies": {
+    "@schematics/angular": "^13.2.5",
+    "@types/jasmine": "~3.10.0",
+    "@types/node": "^12.11.1",
+    "jasmine": "^4.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ https://github.com/linoymalakkaran/ngx-mat-table-rich.git"
+  },
+  "bugs": {
+    "url": "https://github.com/linoymalakkaran/ngx-mat-table-rich.git/issues"
+  },
+  "homepage": "https://github.com/linoymalakkaran/ngx-mat-table-rich.git#readme"
+}

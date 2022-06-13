@@ -1,0 +1,136 @@
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import {
+  IacDecFilterType,
+  IacFilterListResponse,
+  IacFilterModel,
+  IacSavedFilter,
+} from "projects/atlp-iac-ui/projects/@iac-shared/iac-filters/interfaces/savedFilter";
+import { IFilterService } from "projects/atlp-iac-ui/projects/@iac-shared/iac-filters/services/IFilter.service";
+import { Observable, of, pipe } from "rxjs";
+
+import { map, delay, catchError } from "rxjs/operators";
+import {
+  ISnakBarModelData,
+  SnakBarHorizontalPosition,
+  SnakBarModelDefaultErrorData,
+  SnakBarVerticalPosition,
+} from "projects/@atlp/components/snak-bars/models/snak-bar.models";
+import { SnakBarService } from "projects/@atlp/components/snak-bars/service/snak-bar-default.component";
+import { <%=classify(name)%>ApiConfig } from "../../configs/<%=name%>-api.config";
+
+@Injectable({ providedIn: "root" })
+export class <%=classify(name)%>FilterService implements IFilterService {
+  salTransSavedFilters: IacFilterListResponse[] = [];
+  filterTypeName: IacDecFilterType = "<%=underscore(name).toUpperCase() %>_FILTER";
+
+  constructor(
+    private httpClient: HttpClient,
+    private <%=classify(name)%>Api: <%=classify(name)%>ApiConfig,
+    private defaultSnakBar: SnakBarService
+  ) {}
+
+  async saveFilter(
+    name: string,
+    filters: IacFilterModel[]
+  ): Promise<IacFilterListResponse[]> {
+    return new Promise(async (resolve, reject) => {
+      const payload: IacSavedFilter = {
+        id: "",
+        FilterTypeName: this.filterTypeName,
+        FilterName: name,
+        searchDate: new Date().toISOString(),
+        filters: filters,
+      };
+
+      this.httpClient
+        .post<any>(this.<%=classify(name)%>Api.SAVE_FILTER(), payload)
+        .subscribe(
+          (result) => {
+            const mappedNewData: IacFilterListResponse = {
+              id: result.data,
+              name: payload.FilterName,
+              searchDate: payload.searchDate,
+              filters: payload.filters,
+            };
+            payload.id = result.id;
+            this.salTransSavedFilters.unshift(mappedNewData);
+            // this.salTransSavedFilters.push(mappedNewData);
+            resolve([...this.salTransSavedFilters]);
+          },
+          (error) => {
+            const snackBarData: ISnakBarModelData = {
+              ...SnakBarModelDefaultErrorData,
+              duration: 1500,
+              message: "Failed to save filter. Please try again later...!",
+              snakBarHorizontalPosition: SnakBarHorizontalPosition.left,
+              snakBarVerticalPosition: SnakBarVerticalPosition.bottom,
+            };
+            this.defaultSnakBar.warningWithOptions(snackBarData);
+            resolve([...this.salTransSavedFilters]);
+          }
+        );
+    });
+  }
+
+  async deleteFilter(id: string) {
+    const response = await this.httpClient
+      .post<any>(this.<%=classify(name)%>Api.DELETE_FILTER(id), {})
+      .toPromise();
+    if (response.success) {
+      const removeIndex = this.salTransSavedFilters
+        .map(function (item) {
+          return item.id;
+        })
+        .indexOf(id);
+      // remove object
+      this.salTransSavedFilters.splice(removeIndex, 1);
+    } else {
+      const snackBarData: ISnakBarModelData = {
+        ...SnakBarModelDefaultErrorData,
+        duration: 1500,
+        message: "Failed to delete filter. Please try again later...!",
+        snakBarHorizontalPosition: SnakBarHorizontalPosition.left,
+        snakBarVerticalPosition: SnakBarVerticalPosition.bottom,
+      };
+      this.defaultSnakBar.warningWithOptions(snackBarData);
+    }
+    return [...this.salTransSavedFilters];
+  }
+
+  getFiltersList(formatApiResponse: any): Observable<IacFilterListResponse> {
+    return this.httpClient
+      .get<any>(this.<%=classify(name)%>Api.GET_FILTERS(this.filterTypeName))
+      .pipe(
+        map((response: any) => {
+          let result: IacFilterListResponse[] = [];
+          result = response.data?.filterData
+            ? response.data?.filterData.map((dataItem) => {
+                const parsedFilterData = JSON.parse(dataItem.filters);
+                let formattedFilterData = parsedFilterData;
+                if (formatApiResponse) {
+                  formattedFilterData = [];
+                  parsedFilterData.forEach((item) => {
+                    const formattedObj = formatApiResponse(item);
+                    item.originalVal = formattedObj.value;
+                    formattedFilterData.push(formattedObj);
+                  });
+                }
+                let mappedObj: IacFilterListResponse = {
+                  id: dataItem.id,
+                  name: dataItem.name,
+                  searchDate: dataItem.searchDate,
+                  filters: formattedFilterData,
+                };
+                return mappedObj;
+              })
+            : [];
+          this.salTransSavedFilters = result;
+          return [...this.salTransSavedFilters];
+        }),
+        catchError((error) => {
+          return [];
+        })
+      );
+  }
+}
